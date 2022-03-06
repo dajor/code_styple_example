@@ -1,0 +1,32 @@
+name: Lint
+
+on: [push, pull_request]
+
+# jobs:
+#   lint:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: psf/black@stable
+#         with:
+#           options: ". --exclude /alembic/"
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          architecture: x64
+      - name: Install Python dependencies
+        run: |
+          pip install black
+      - uses: wearerequired/lint-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          black: true
+          black_args: "--exclude /migrations/"
+          auto_fix: true
+          commit_message: "Fix code style issues with ${linter}"
